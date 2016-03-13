@@ -21,6 +21,9 @@ public class Len_fixed_stack<T_item> {
 		return arr[--dy_sz];
 	}
 
+	public T_item peek(){
+		return arr[dy_sz];
+	}
 	public int size(){
 		return dy_sz;
 	}
