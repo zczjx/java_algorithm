@@ -1,8 +1,10 @@
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdIn;
+import java.util.Iterator;
 
-
-public class Len_fixed_stack<T_item> {
+public class Len_fixed_stack<T_item>
+	implements Iterable<T_item>
+{
 
 	private T_item[] arr;
 	private int dy_sz;
@@ -37,6 +39,26 @@ public class Len_fixed_stack<T_item> {
 	public boolean isFull(){
 		return (dy_sz == cap);
 	}
+	private class Stack_iterator implements Iterator<T_item>{
+		private int i = dy_sz;
+
+		public boolean	hasNext(){
+			return (i > 0);
+		}
+
+		public T_item	next(){
+			return arr[--i];
+		}
+
+		public void remove(){
+
+		}
+
+	}
+	public Iterator<T_item>  iterator(){
+		return new Stack_iterator();
+
+	}
 	public static void main(String args[]){
 		Len_fixed_stack<String> foo;
 		foo = new Len_fixed_stack<String>(100);
@@ -48,6 +70,9 @@ public class Len_fixed_stack<T_item> {
 				StdOut.print(foo.pop() + " ");
 		}
 		StdOut.println("(" + foo.size() + " left on stack)");
-	} 
+		for(String s : foo){
+			StdOut.println("left have :" + s);
+		} 		
+	}
 }
 
