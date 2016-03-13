@@ -22,6 +22,8 @@ public class Len_fixed_stack<T_item> {
 	}
 
 	public T_item peek(){
+		if(this.isEmpty())
+			return (T_item) null;
 		return arr[dy_sz];
 	}
 	public int size(){
