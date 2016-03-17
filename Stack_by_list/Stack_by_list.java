@@ -16,7 +16,12 @@ public class Stack_by_list<T_item>
 	}
 
 	public Stack_by_list(Stack_by_list s){
-		head = new Node(s.head) ;
+		if(s.head != null){
+			this.head = new Node(s.head) ;
+			this.dy_sz = s.dy_sz;
+		}
+		for(Node<T_item> x = head; x.next != null; x = x.next)
+			x.next = new Node(x.next) ;
 	
 	}
 	public void push(T_item it){
@@ -58,15 +63,12 @@ public class Stack_by_list<T_item>
 		Node<N_item> next;
 
 		public Node(){
-			it = null;
-			next = null;
+			this.it = null;
+			this.next = null;
 		}
 		public Node(Node<N_item> n){
-			it = n.it;
-			if(n.next != null)
-				next = new Node(n.next) ;
-			else
-				next = null;
+			this.it = n.it;
+			this.next = n.next;
 		}
 	}
 	
@@ -110,6 +112,14 @@ public class Stack_by_list<T_item>
 		
 		for(String s : bar){
 			StdOut.println("bar left have :" + s);
+		} 
+		StdOut.println(foo.pop() + " ");
+		for(String s : foo){
+			StdOut.println("after pop foo left have :" + s);
+		} 
+
+		for(String s : bar){
+			StdOut.println("after pop  bar left have :" + s);
 		} 
 	}
 }
