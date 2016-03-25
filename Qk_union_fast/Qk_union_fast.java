@@ -24,27 +24,27 @@ public class Qk_union_fast {
 	}
 
 	public int find(int p){
-		if((p < 0) || (p >= cnt))
+		if((p < 0) || (p >= parent_map.length))
 			throw new IndexOutOfBoundsException("invalidate P value");
-		if(p != this.parent_map[p])
+		while(p != this.parent_map[p])
 			p = this.parent_map[p];
 		return p;
 
 	}
 	public boolean is_connected(int p, int q){
 
-		if((p < 0) || (p >= cnt))
+		if((p < 0) || (p >= parent_map.length))
 			throw new IndexOutOfBoundsException("invalidate P value");
-		if((q < 0) || (q >= cnt))
+		if((q < 0) || (q >= parent_map.length))
 			throw new IndexOutOfBoundsException("invalidate q value");
 		
 		return (this.find(p) == this.find(q));
 	}
 
 	public void mk_union(int p, int q){
-		if((p < 0) || (p >= cnt))
+		if((p < 0) || (p >= parent_map.length))
 			throw new IndexOutOfBoundsException("invalidate P value");
-		if((q < 0) || (q >= cnt))
+		if((q < 0) || (q >= parent_map.length))
 			throw new IndexOutOfBoundsException("invalidate q value");
 		int p_id = this.find(p);
 		int q_id = this.find(q);

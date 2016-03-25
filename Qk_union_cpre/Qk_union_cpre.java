@@ -1,19 +1,21 @@
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdIn;
 
+/*
+  p1 --> p2 --> p3 --> p4 -->q
+*/
 
 
-
-public class Qk_find_fast{
-	private int id_map[];
+public class Qk_union_cpre {
+	private int parent_map[];
 	private int cnt;
-	public Qk_find_fast(int nr_point){
+	public Qk_union_cpre (int nr_point){
 		if(nr_point < 0)
 			throw new NegativeArraySizeException("invalidate nr_point value");
 		this.cnt = nr_point;
-		id_map = new int[this.cnt];
+		parent_map = new int[this.cnt];
 		for(int i = 0; i < this.cnt; i++)
-			id_map[i] = i;
+			parent_map[i] = i;
 	}
 
 	public int count(){
@@ -22,39 +24,45 @@ public class Qk_find_fast{
 	}
 
 	public int find(int p){
-		if((p < 0) || (p >= id_map.length))
+		int root = p;
+		if((p < 0) || (p >= parent_map.length))
 			throw new IndexOutOfBoundsException("invalidate P value");
-		return this.id_map[p];
+		while(root != this.parent_map[root])
+			root = this.parent_map[root];  //find the real root first
+
+		while(p != root){
+			int newp = this.parent_map[p];
+			this.parent_map[p] = root;
+			p = newp;
+		}
+		return p;
 
 	}
 	public boolean is_connected(int p, int q){
 
-		if((p < 0) || (p >= id_map.length))
+		if((p < 0) || (p >= parent_map.length))
 			throw new IndexOutOfBoundsException("invalidate P value");
-		if((q < 0) || (q >= id_map.length))
+		if((q < 0) || (q >= parent_map.length))
 			throw new IndexOutOfBoundsException("invalidate q value");
 		
 		return (this.find(p) == this.find(q));
 	}
 
 	public void mk_union(int p, int q){
-		if((p < 0) || (p >= id_map.length))
+		if((p < 0) || (p >= parent_map.length))
 			throw new IndexOutOfBoundsException("invalidate P value");
-		if((q < 0) || (q >= id_map.length))
+		if((q < 0) || (q >= parent_map.length))
 			throw new IndexOutOfBoundsException("invalidate q value");
 		int p_id = this.find(p);
 		int q_id = this.find(q);
 		if(p_id == q_id)
 			return;
-
-		for(int i = 0; i < id_map.length; i++)
-			if(id_map[i] == p_id)
-				id_map[i] = q_id;
+		parent_map[p_id] = q_id;
 		this.cnt-- ;
 	}
 	public static void main(String args[]){
 		int N = Integer.parseInt(args[0]);
-		Qk_find_fast test = new Qk_find_fast(N);
+		Qk_union_cpre  test = new Qk_union_cpre (N);
 		while(!StdIn.isEmpty()){
 			int p = StdIn.readInt();
 			int q = StdIn.readInt();
