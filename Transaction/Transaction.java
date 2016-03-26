@@ -48,17 +48,27 @@ public class Transaction implements Comparable<Transaction> {
 	public String toString(){
 		return String.format("%-10s %10s %8.1f", this.who, this.when, this.amount);
 
-	}	
+	}
+	public static Transaction[]  readTransactions(){
+		Var_queue<Transaction> tq = new Var_queue<Transaction>();
+		while(StdIn.hasNextLine()){
+			String who, when;
+			double amount;
+			String [] line = StdIn.readLine().split("\\s+");
+			who    = line[0];
+			when   = line[1];
+			amount = Double.valueOf(line[2]);
+			Transaction t = new Transaction(who, when, amount);
+			tq.enqueue(t);
+		}
+		int N = tq.size();
+		Transaction [] ret = new Transaction[N];
+		for(int i = 0; i < N; i++)
+			ret[i] = tq.dequeue();
+		return ret;
+	}
 	public static void main(String args[]){
-		Transaction [] arr = new Transaction[4];
-		arr[0] = new Transaction("Clarence", "6/17/1990",  644.08);
-        arr[1] = new Transaction("Summer", "3/26/2002", 4121.85);
-        arr[2] = new Transaction("Evan", "6/14/1999",  288.34);
-        arr[3] = new Transaction("Justin", "8/22/2007", 2678.40);
-		StdOut.println("Unsorted");
-		for (int i = 0; i < arr.length; i++)
-            StdOut.println(arr[i]);
-        StdOut.println();
+		Transaction [] arr = readTransactions();
 		StdOut.println("Sort by amount");
 		Arrays.sort(arr);
 		for (int i = 0; i < arr.length; i++)
