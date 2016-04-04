@@ -19,6 +19,8 @@ public class SortCompare {
 			MergeSortX.sort(a);
 		else if(sort_name.equals("fast_merge"))
 			FastMergeSort.sort(a);
+		else if(sort_name.equals("quick"))
+			Quick.sort(a);
 		else
 			timer.elapsedTime();
 
