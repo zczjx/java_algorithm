@@ -59,6 +59,10 @@ public class Job<Key>
 			t += jobs[i].get_time() * (N - i);
 		t /= N;
 		StdOut.println(t + "  secs");
+
+		StdOut.println("Job schedule list: ");
+		for(int i = 0; i < N; i++)
+			StdOut.println(jobs[i].get_cont() + " : " + jobs[i].get_time());
 		
 	}
 		
