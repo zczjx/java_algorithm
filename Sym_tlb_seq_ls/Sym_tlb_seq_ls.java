@@ -1,6 +1,8 @@
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdIn;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 
 class SymNode<Key extends Comparable<Key>, Val>{
 		public Key k;
@@ -35,7 +37,7 @@ public class Sym_tlb_seq_ls<Key extends Comparable<Key>, Val> implements Iterabl
 		this.nr_cnt = 0;
 	}
 
-	private SymNode<Key, Val> nth_node_of_ls(int n){
+	private SymNode<Key, Val> select(int n){
 		SymNode<Key, Val> tmp = this.head;
 		for(int j = 0 ; j < n; j++)
 			tmp = tmp.next;
@@ -49,8 +51,8 @@ public class Sym_tlb_seq_ls<Key extends Comparable<Key>, Val> implements Iterabl
 			return ;
 		}
 		int i = rank(k);
-		if((i < this.nr_cnt) && (nth_node_of_ls(i).k.compareTo(k) == 0)){
-			SymNode<Key, Val> tmp = nth_node_of_ls(i);
+		if((i < this.nr_cnt) && (select(i).k.compareTo(k) == 0)){
+			SymNode<Key, Val> tmp = select(i);
 			tmp.v = v;
 			return;
 		}
@@ -60,7 +62,7 @@ public class Sym_tlb_seq_ls<Key extends Comparable<Key>, Val> implements Iterabl
 			this.nr_cnt++;
 			return;
 		}
-		SymNode<Key, Val> tmp = nth_node_of_ls(i - 1);
+		SymNode<Key, Val> tmp = select(i - 1);
 		SymNode<Key, Val> insert = new SymNode(k, v);
 		insert.next = tmp.next;
 		tmp.next = insert;
@@ -71,8 +73,8 @@ public class Sym_tlb_seq_ls<Key extends Comparable<Key>, Val> implements Iterabl
 		if(isEmpty())
 			return null;
 		int i = rank(k);
-		if((i < this.nr_cnt) && (nth_node_of_ls(i).k.compareTo(k) == 0)){
-			SymNode<Key, Val> tmp = nth_node_of_ls(i);
+		if((i < this.nr_cnt) && (select(i).k.compareTo(k) == 0)){
+			SymNode<Key, Val> tmp = select(i);
 			return tmp.v;
 		}
 		else
@@ -81,13 +83,13 @@ public class Sym_tlb_seq_ls<Key extends Comparable<Key>, Val> implements Iterabl
 
 	public void delete(Key k){
 		int i = rank(k);
-		if((i < this.nr_cnt) && (nth_node_of_ls(i).k.compareTo(k) == 0)){
+		if((i < this.nr_cnt) && (select(i).k.compareTo(k) == 0)){
 			if(i == 0){
 				this.head = null;
 				this.nr_cnt--;
 				return;
 			}
-			SymNode<Key, Val> tmp = nth_node_of_ls(i - 1);
+			SymNode<Key, Val> tmp = select(i - 1);
 			SymNode<Key, Val> del = tmp.next;
 			tmp.next = del.next;
 			del = null;
@@ -98,7 +100,16 @@ public class Sym_tlb_seq_ls<Key extends Comparable<Key>, Val> implements Iterabl
 			return;
 
 	}
-	
+	public void delmin(){
+		if(isEmpty())
+			throw new NoSuchElementException("under flow");
+		delete(min());
+	}
+	public void delmax(){
+		if(isEmpty())
+			throw new NoSuchElementException("under flow");
+		delete(max());
+	}
 	public boolean contains(Key k){
 		if(k == null)
 			throw new NullPointerException("argument to contains() is null");
@@ -114,12 +125,12 @@ public class Sym_tlb_seq_ls<Key extends Comparable<Key>, Val> implements Iterabl
 
 	}
 	public Key min(){
-		return nth_node_of_ls(0).k;
+		return select(0).k;
 
 	}
 
 	public Key max(){
-		return nth_node_of_ls(this.nr_cnt - 1).k;
+		return select(this.nr_cnt - 1).k;
 
 	}
 
@@ -127,7 +138,7 @@ public class Sym_tlb_seq_ls<Key extends Comparable<Key>, Val> implements Iterabl
 		int lo = 0, hi = this.nr_cnt - 1;
 		while(lo <= hi){
 			int mid = lo + (hi - lo) / 2;
-			int cmp = k.compareTo(nth_node_of_ls(mid).k);
+			int cmp = k.compareTo(select(mid).k);
 			if(cmp < 0)
 				hi = mid - 1;
 			else if(cmp > 0)
@@ -141,9 +152,9 @@ public class Sym_tlb_seq_ls<Key extends Comparable<Key>, Val> implements Iterabl
 	public Iterable<Key> keys(Key lo, Key hi){
 		Var_queue<Key> foo = new Var_queue<Key>();
 		for(int i = rank(lo); i < rank(hi); i++)
-			foo.enqueue(nth_node_of_ls(i).k);
+			foo.enqueue(select(i).k);
 		if(contains(hi))
-			foo.enqueue(nth_node_of_ls(rank(hi)).k);
+			foo.enqueue(select(rank(hi)).k);
 		return foo;
 
 
@@ -158,7 +169,7 @@ public class Sym_tlb_seq_ls<Key extends Comparable<Key>, Val> implements Iterabl
 
 		public Key	next(){
 			if(hasNext())
-				return nth_node_of_ls(i++).k;
+				return select(i++).k;
 			return null;
 		}
 

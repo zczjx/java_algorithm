@@ -1,6 +1,8 @@
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdIn;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 
 public class Sym_tlb_arr<Key extends Comparable<Key>, Val> implements Iterable<Key>
 {
@@ -19,6 +21,13 @@ public class Sym_tlb_arr<Key extends Comparable<Key>, Val> implements Iterable<K
 
 
 	public void put(Key k, Val v){
+		if (k == null) throw new NullPointerException("first argument to put() is null"); 
+
+        if (v == null) {
+            delete(k);
+            return;
+        }
+		
 		int i = rank(k);
 		if((i < this.nr_cnt) && (k_arr[i].compareTo(k) == 0)){
 			v_arr[i] = v;
@@ -46,6 +55,8 @@ public class Sym_tlb_arr<Key extends Comparable<Key>, Val> implements Iterable<K
 	}
 
 	public void delete(Key k){
+		if (k == null) throw new NullPointerException("argument to delete() is null"); 
+        if (isEmpty()) return;
 		int i = rank(k);
 		if((i < this.nr_cnt) && (k_arr[i].compareTo(k) == 0)){
 			if(i == 0){
@@ -67,7 +78,16 @@ public class Sym_tlb_arr<Key extends Comparable<Key>, Val> implements Iterable<K
 			return;
 
 	}
-	
+	public void delmin(){
+		if(isEmpty())
+			throw new NoSuchElementException("under flow");
+		delete(min());
+	}
+	public void delmax(){
+		if(isEmpty())
+			throw new NoSuchElementException("under flow");
+		delete(max());
+	}
 	public boolean contains(Key k){
 		int i = rank(k);
 		if((i < this.nr_cnt) && (k_arr[i].compareTo(k) == 0))
@@ -107,6 +127,12 @@ public class Sym_tlb_arr<Key extends Comparable<Key>, Val> implements Iterable<K
 				return mid;
 		}
 		return lo;
+	}
+
+	public Key select(int k){
+		if((k < 0) || (k >= this.nr_cnt))
+			return null;
+		return this.k_arr[k];
 	}
 
 	public Iterable<Key> keys(Key lo, Key hi){
