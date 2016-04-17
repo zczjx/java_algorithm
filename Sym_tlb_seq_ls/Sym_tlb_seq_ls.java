@@ -17,6 +17,11 @@ class SymNode<Key extends Comparable<Key>, Val>{
 			this.v  = v;
 			this.next = null;
 		}
+		public SymNode(Key k, Val v, SymNode<Key, Val> next){
+			this.k = k;
+			this.v  = v;
+			this.next = next;
+		}
 	}
 
 
@@ -37,6 +42,12 @@ public class Sym_tlb_seq_ls<Key extends Comparable<Key>, Val> implements Iterabl
 		return tmp;
 	}
 	public void put(Key k, Val v){
+		if(k == null)
+			throw new NullPointerException("argument to contains() is null");
+		if(v == null){
+			delete(k);
+			return ;
+		}
 		int i = rank(k);
 		if((i < this.nr_cnt) && (nth_node_of_ls(i).k.compareTo(k) == 0)){
 			SymNode<Key, Val> tmp = nth_node_of_ls(i);
@@ -89,11 +100,9 @@ public class Sym_tlb_seq_ls<Key extends Comparable<Key>, Val> implements Iterabl
 	}
 	
 	public boolean contains(Key k){
-		int i = rank(k);
-		if((i < this.nr_cnt) && (nth_node_of_ls(i).k.compareTo(k) == 0))
-			return true;
-		else
-			return false;
+		if(k == null)
+			throw new NullPointerException("argument to contains() is null");
+		return get(k) != null;
 
 	}
 	public boolean isEmpty(){
