@@ -176,6 +176,7 @@ public class Sym_tlb_seq_ls<Key extends Comparable<Key>, Val> implements Iterabl
         gpa.put("C+", 2.33);
         gpa.put("A-", 3.67);
         gpa.put("B-", 2.67);
+		StdOut.println("before del size is: " + gpa.size());
 		while(!StdIn.isEmpty()){
 			String g = StdIn.readString();
 			StdOut.println(g + " : " + gpa.get(g));
@@ -183,7 +184,21 @@ public class Sym_tlb_seq_ls<Key extends Comparable<Key>, Val> implements Iterabl
 		
 		for(Object s: gpa.keys("A", "C"))
 			StdOut.println(s);
-	
+		
+		gpa.delete("B+");
+		gpa.delete("A+");
+		gpa.delete("C+");
+
+
+		while(!StdIn.isEmpty()){
+			String g = StdIn.readString();
+			StdOut.println(g + " : " + gpa.get(g));
+		}
+		
+		for(Object s: gpa.keys("A", "C"))
+			StdOut.println(s);
+
+		StdOut.println("after del size is: " + gpa.size());
 	}
 		
 }
