@@ -212,6 +212,15 @@ public class SymTlb_binTree<Key extends Comparable<Key>, Val>
 			throw new NullPointerException("argument to contains() is null");
 		return rank(root, k);
 	}
+	public int height(){
+		return height(this.root);
+	}
+
+	private int height(BinNode<Key, Val> node){
+		if(node == null)
+			return -1;
+		return 1 + Math.max(height(node.left), height(node.right));
+	}
 
 	private int rank(BinNode<Key, Val> node, Key k){
 		if(k == null)
@@ -242,22 +251,24 @@ public class SymTlb_binTree<Key extends Comparable<Key>, Val>
 	
 	public static void main(String args[]){
 		SymTlb_binTree<String, Double> gpa = new SymTlb_binTree<String, Double>();
-		gpa.put("A",  4.00);
-        gpa.put("B",  3.00);
-        gpa.put("C",  2.00);
-        gpa.put("D",  1.00);
-        gpa.put("F",  0.00);
-        gpa.put("A+", 4.33);
-        gpa.put("B+", 3.33);
-        gpa.put("C+", 2.33);
-        gpa.put("A-", 3.67);
+		gpa.put("C",  2.00);
+		gpa.put("C+", 2.33);
+		gpa.put("D",  1.00);
+		gpa.put("B",  3.00);
+		gpa.put("B+", 3.33);       
         gpa.put("B-", 2.67);
+		gpa.put("A",  4.00);
+		gpa.put("A-", 3.67);
+		gpa.put("A+", 4.33);
+        gpa.put("F",  0.00);
+
 		StdOut.println("before del size is: " + gpa.size());
 		while(!StdIn.isEmpty()){
 			String g = StdIn.readString();
 			StdOut.println(g + " : " + gpa.get(g));
 		}
 		Var_queue<String> que = (Var_queue<String>)gpa.keys("A", "C");
+		StdOut.println("height is :" + gpa.height());
 		StdOut.println("key sort is :");
 		while(!que.isEmpty())
 		StdOut.println(que.dequeue());
@@ -271,6 +282,8 @@ public class SymTlb_binTree<Key extends Comparable<Key>, Val>
 			StdOut.println(g + " : " + gpa.get(g));
 		}
 		StdOut.println("after del size is: " + gpa.size());
+
+		StdOut.println("height is :" + gpa.height());
 	}
 		
 }
