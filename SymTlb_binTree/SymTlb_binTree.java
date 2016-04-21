@@ -257,7 +257,10 @@ public class SymTlb_binTree<Key extends Comparable<Key>, Val>
 			String g = StdIn.readString();
 			StdOut.println(g + " : " + gpa.get(g));
 		}
-		
+		Var_queue<String> que = (Var_queue<String>)gpa.keys("A", "C");
+		StdOut.println("key sort is :");
+		while(!que.isEmpty())
+		StdOut.println(que.dequeue());
 		gpa.delete("B+");
 		gpa.delete("A+");
 		gpa.delete("C+");
