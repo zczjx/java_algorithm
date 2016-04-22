@@ -236,6 +236,23 @@ public class SymTlb_binTree<Key extends Comparable<Key>, Val>
 			return size(node.left);
 			
 	}
+	public boolean isBST(){
+		return isBST(root, null, null);
+	}
+
+	
+	private boolean isBST(BinNode<Key, Val> node, Key min, Key max){
+		if(node == null)
+			return true;
+
+		if((min != null) && node.k.compareTo(min) <= 0)
+			return false;
+		if((max != null) && node.k.compareTo(max) >= 0)
+			return false;
+
+		return isBST(node.left, min, node.k) && isBST(node.right, node.k, max);
+
+	}
 
 	public Iterable<Key> keys(Key lo, Key hi){
 		Var_queue<Key> foo = new Var_queue<Key>();
@@ -261,6 +278,7 @@ public class SymTlb_binTree<Key extends Comparable<Key>, Val>
 		gpa.put("A-", 3.67);
 		gpa.put("A+", 4.33);
         gpa.put("F",  0.00);
+		StdOut.println(gpa.isBST());
 
 		StdOut.println("before del size is: " + gpa.size());
 		while(!StdIn.isEmpty()){
