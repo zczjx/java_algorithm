@@ -236,6 +236,23 @@ public class SymTlb_binTree<Key extends Comparable<Key>, Val>
 			return size(node.left);
 			
 	}
+	public boolean isRank_comparable(BinNode<Key, Val> node){
+		for(int i =0; i < size(); i++){
+			if(i != rank(select(i)))
+				return false;
+		}
+		StdOut.println("rank select");
+		Var_queue<Key> foo = (Var_queue<Key>) keys(max(), min());
+		while(!foo.isEmpty()){
+			Key k = foo.dequeue();
+			if(k.compareTo(select(rank(k))) != 0)
+				return false;
+		}
+		StdOut.println("select rank");
+		return true;
+				
+	}
+	
 	public boolean isBST(){
 		return isBST(root, null, null);
 	}
@@ -278,8 +295,10 @@ public class SymTlb_binTree<Key extends Comparable<Key>, Val>
 		gpa.put("A-", 3.67);
 		gpa.put("A+", 4.33);
         gpa.put("F",  0.00);
+		
 		StdOut.println(gpa.isBST());
-
+		StdOut.println(gpa.isRank_comparable(gpa.root));
+		
 		StdOut.println("before del size is: " + gpa.size());
 		while(!StdIn.isEmpty()){
 			String g = StdIn.readString();
