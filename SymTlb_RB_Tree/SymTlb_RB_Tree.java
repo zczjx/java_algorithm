@@ -405,47 +405,51 @@ public class SymTlb_RB_Tree<Key extends Comparable<Key>, Val>
 
 
 	}
+	private boolean is23(){
+		return is23(this.root);
+
+	}
+
+	private boolean is23(RBNode<Key, Val> node){
+		if(node == null)
+			return true;
+		if(isRed(node.right))
+			return false;
+		if(node != this.root && isRed(node) && isRed(node.left))
+			return false;
+		return is23(node.left) && is23(node.right);
+	}
+
+	private boolean isbalanced(){
+		int black = 0;
+		RBNode<Key, Val> tmp = this.root;
+		while(tmp != null){
+			if(!isRed(tmp))
+				black++;  // total black node in left
+			tmp = tmp.left;
+		}
+		return isbalanced(this.root, black);
+
+	}
+
+	private boolean isbalanced(RBNode<Key, Val> node, int black_cnt){
+		if(node == null)
+			return black_cnt == 0;
+		if(!isRed(node))
+			black_cnt--;
+		return isbalanced(node.left, black_cnt) && isbalanced(node.right, black_cnt);
+
+	}
 	
 	public static void main(String args[]){
-		SymTlb_RB_Tree<String, Double> gpa = new SymTlb_RB_Tree<String, Double>();
-		gpa.put("C",  2.00);
-		gpa.put("C+", 2.33);
-		gpa.put("D",  1.00);
-		gpa.put("B",  3.00);
-		gpa.put("B+", 3.33);       
-        gpa.put("B-", 2.67);
-		gpa.put("A",  4.00);
-		gpa.put("A-", 3.67);
-		gpa.put("A+", 4.33);
-        gpa.put("F",  0.00);
+		String [] words = StdIn.readAllStrings();
+		SymTlb_RB_Tree<String, Integer> bst = new SymTlb_RB_Tree<String, Integer>();
+		for(int i = 0; i < words.length; i++)
+			bst.put(words[i], i);
+		StdOut.println("bst height is: " + bst.height());	
+		StdOut.println("is23 ?  : " + bst.is23());
+		StdOut.println("isbalanced ?  : " + bst.isbalanced());
 		
-		StdOut.println(gpa.isBST());
-		StdOut.println(gpa.isRank_comparable(gpa.root));
-		
-		StdOut.println("before del size is: " + gpa.size());
-		while(!StdIn.isEmpty()){
-			String g = StdIn.readString();
-			StdOut.println(g + " : " + gpa.get(g));
-		}
-		Var_queue<String> que = (Var_queue<String>)gpa.keys("A", "C");
-		StdOut.println("height is :" + gpa.height());
-		StdOut.println("key sort is :");
-		while(!que.isEmpty())
-		StdOut.println(que.dequeue());
-		gpa.delete("B+");
-		gpa.delete("A+");
-		gpa.delete("C+");
-
-
-		while(!StdIn.isEmpty()){
-			String g = StdIn.readString();
-			StdOut.println(g + " : " + gpa.get(g));
-		}
-		StdOut.println("after del size is: " + gpa.size());
-
-		StdOut.println("height is :" + gpa.height());
 	}
-		
 }
-
 
