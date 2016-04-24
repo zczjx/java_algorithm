@@ -1,57 +1,72 @@
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdIn;
 import java.util.NoSuchElementException;
+enum Color {
+	RED,
+	BLACK
+}
 
 
-class BinNode<Key extends Comparable<Key>, Val>{
+class RBNode<Key extends Comparable<Key>, Val>{
 		public Key k;
 		public Val v;
 		public int node_nr;
-		BinNode<Key, Val> left;
-		BinNode<Key, Val> right;
+		public Color color;
+		RBNode<Key, Val> left;
+		RBNode<Key, Val> right;
 
-		public BinNode(){
+		public RBNode(){
 			this.k = null;
 			this.v = null;
 			this.left  = null;
 			this.right = null;
+			this.color = Color.BLACK;
 
 		}
-		public BinNode(Key k, Val v, int node_nr){
+		public RBNode(Key k, Val v, Color color, int node_nr){
 			this.k     = k;
 			this.v     = v;
 			this.node_nr = node_nr; 
+			this.color = color;
 			this.left  = null;
 			this.right = null;
 		}
-		public BinNode(Key k, Val v, 
-						BinNode<Key, Val> left, BinNode<Key, Val> right, 
-						int node_nr){
+		public RBNode(Key k, Val v, 
+						RBNode<Key, Val> left, RBNode<Key, Val> right, 
+						Color color, int node_nr){
 			this.k = k;
 			this.v  = v;
 			this.left  = left;
 			this.right = right;
 			this.node_nr = node_nr; 
+			this.color = color;
 		}
+
 	}
 
 
-public class SymTlb_binTree<Key extends Comparable<Key>, Val> 
+public class SymTlb_RB_Tree<Key extends Comparable<Key>, Val> 
 {
-	private BinNode<Key, Val> root;
+	private RBNode<Key, Val> root;
 
 	
-	public SymTlb_binTree(){
+	public SymTlb_RB_Tree(){
 		this.root = null;
 
 	}
+	
+	public boolean isRed(RBNode<Key, Val> node){
+			if(node == null)
+				return false;
+			return node.color == Color.RED;
+		}
 	public Key select(int k){
 		if((k < 0) || k >= size())
 			throw new IllegalArgumentException();
-		BinNode<Key, Val> nd = select(root, k);
+		RBNode<Key, Val> nd = select(root, k);
 		return nd.k;
 	}
-	private BinNode<Key, Val> select(BinNode<Key, Val> node, int n){
+	private RBNode<Key, Val> select(RBNode<Key, Val> node, int n){
 		if(node == null)
 			return null;
 		int cnt = size(node.left);
@@ -62,9 +77,48 @@ public class SymTlb_binTree<Key extends Comparable<Key>, Val>
 		else
 			return node;
 	}
-	private BinNode<Key, Val> put(BinNode<Key, Val> node, Key k, Val v){
+	private RBNode<Key, Val> rotateLeft(RBNode<Key, Val> node){
+		RBNode<Key, Val> tmp = node.right;
+		node.right = tmp.left;
+		tmp.left = node;
+		tmp.color = tmp.left.color;
+		tmp.left.color = Color.RED;
+		tmp.node_nr = node.node_nr;
+		node.node_nr = 1 + size(node.left) + size(node.right);
+		return tmp;
+	}
+
+	private RBNode<Key, Val> rotateRight(RBNode<Key, Val> node){
+		RBNode<Key, Val> tmp = node.left;
+		node.left = tmp.right;
+		tmp.right = node;
+		tmp.color = tmp.right.color;
+		tmp.right.color = Color.RED;
+		tmp.node_nr = node.node_nr;
+		node.node_nr = 1 + size(node.left) + size(node.right);
+		return tmp;
+
+	}
+
+	private void flipcolors(RBNode<Key, Val> node){
+		if(isRed(node))
+			node.color = Color.BLACK;
+		else
+			node.color = Color.RED;
+		
+		if(isRed(node.left))
+			node.left.color = Color.BLACK;
+		else
+			node.left.color = Color.RED;
+
+		if(isRed(node.right))
+			node.right.color = Color.BLACK;
+		else
+			node.right.color = Color.RED;
+	}
+	private RBNode<Key, Val> put(RBNode<Key, Val> node, Key k, Val v){
 		if(node == null)
-			return new BinNode<Key, Val> (k, v, 1);
+			return new RBNode<Key, Val> (k, v, Color.RED, 1);
 		int cmp = k.compareTo(node.k);
 		if(cmp < 0)
 			node.left = put(node.left, k, v);
@@ -73,6 +127,13 @@ public class SymTlb_binTree<Key extends Comparable<Key>, Val>
 			node.right = put(node.right, k, v);
 		else
 			node.v = v;
+		
+		if(isRed(node.right) && !isRed(node.left)) 
+			node = rotateLeft(node);
+		if(isRed(node.left) && isRed(node.left.left)) 
+			node = rotateRight(node);
+		if(isRed(node.left) && isRed(node.right)) 
+			flipcolors(node);
 		node.node_nr = 1 + size(node.left) + size(node.right);
 		return node;
 		
@@ -85,12 +146,13 @@ public class SymTlb_binTree<Key extends Comparable<Key>, Val>
 			return ;
 		}
 		this.root = put(root, k, v); //update root
+		this.root.color = Color.BLACK;
 		
 	}
 	public Val get(Key k){
 		return get(this.root, k);
 	}
-	private Val get(BinNode<Key, Val> node, Key k){
+	private Val get(RBNode<Key, Val> node, Key k){
 		if(node == null)
 			return null;
 		int cmp = k.compareTo(node.k);
@@ -105,58 +167,119 @@ public class SymTlb_binTree<Key extends Comparable<Key>, Val>
 	public void delete(Key k){
 		if(k == null)
 			throw new NullPointerException("argument to contains() is null");
+		if(!contains(k))
+			return ;
+		if(!isRed(root.left) && !isRed(root.right))
+			root.color = Color.RED;
+		
 		this.root = delete(root, k); //update root
+		if(!isEmpty())
+			root.color = Color.BLACK;
+		
 	}
-	private BinNode<Key, Val> delete(BinNode<Key, Val> node, Key k){
-		if(k == null)
-			return null;
+	private RBNode<Key, Val> delete(RBNode<Key, Val> node, Key k){
 
-		int cmp = k.compareTo(node.k);
-		if(cmp < 0)
+		if(k.compareTo(node.k) < 0){
+			// delete node in left tree
+			if(!isRed(node.left) && !isRed(node.left.left))
+				// left is 2- node
+				node = moveRedleft(node);
 			node.left = delete(node.left, k);
-
-		else if(cmp > 0)
-			node.right = delete(node.right, k);
-		else{
-			if(node.right == null)
-				return node.left;
-			if(node.left == null)
-				return node.right;
-			BinNode<Key, Val> tmp = node;
-			node = min(tmp.right);
-			node.right = delmin(tmp.right);
-			node.left  = tmp.left;
 		}
+		else{
+			// delete node in right tree
+			if(isRed(node.left)) //node have red left,when del big oneshould rotate before del and then be balanced
+				node = rotateRight(node);
+			if((k.compareTo(node.k) == 0) && (node.right == null))
+				//node is leaf node, del directly
+				return null;
+			if(!isRed(node.right) && !isRed(node.right.left))
+				// node.right is  2- node
+				node = moveRedright(node);
+			if(k.compareTo(node.k) == 0){
+				// del node is 3- or 4- node in right
+				RBNode<Key, Val> tmp = min(node.right);
+				node.k = tmp.k;
+				node.v = tmp.v;
+				node.right = delmin(node.right);
+			}
+			else
+				node.right = delete(node.right, k);
+		}
+		return balance(node);
+		
+	}
+
+	private RBNode<Key, Val> moveRedleft(RBNode<Key, Val> node){
+		flipcolors(node);
+		if(isRed(node.right.left)){
+			node.right = rotateRight(node.right);
+			node = rotateLeft(node);
+			flipcolors(node);
+		}
+		return node;
+	}
+
+	private RBNode<Key, Val> moveRedright(RBNode<Key, Val> node){
+		flipcolors(node);
+		if(isRed(node.left.left)){
+			node = rotateRight(node);
+			flipcolors(node);
+		}
+		return node;
+	}
+
+	private RBNode<Key, Val> balance(RBNode<Key, Val> node){
+		if(isRed(node.right)) 
+			node = rotateLeft(node);
+		if(isRed(node.left) && isRed(node.left.left)) 
+			node = rotateRight(node);
+		if(isRed(node.left) && isRed(node.right)) 
+			flipcolors(node);
 		node.node_nr = 1 + size(node.left) + size(node.right);
 		return node;
 	}
-	
 	public void delmin(){
 		if(isEmpty())
 			throw new NoSuchElementException("under flow");
+		if(!isRed(root.left) && !isRed(root.right))
+			root.color = Color.RED;
 		this.root = delmin(root);
+		if(!isEmpty())
+			root.color = Color.BLACK;
 	}
 
-	private BinNode<Key, Val> delmin(BinNode<Key, Val> node){
+	private RBNode<Key, Val> delmin(RBNode<Key, Val> node){
 		if(node.left == null)
-			return node.right;
+			return null;
+		if(!isRed(node.left) && !isRed(node.left.left))
+				// left is 2- node
+				node = moveRedleft(node);
 		node.left = delmin(node.left);
-		node.node_nr = 1 + size(node.left) + size(node.right);
-		return node;
+		return balance(node);
 	}
 	
 	public void delmax(){
 		if(isEmpty())
 			throw new NoSuchElementException("under flow");
+		if(!isRed(root.left) && !isRed(root.right))
+			root.color = Color.RED;
 		this.root = delmax(root);
+		if(!isEmpty())
+			root.color = Color.BLACK;
 	}
 
-	private BinNode<Key, Val> delmax(BinNode<Key, Val> node){
+	private RBNode<Key, Val> delmax(RBNode<Key, Val> node){
+		if(isRed(node.left)) //node have red left,when del big oneshould rotate before del and then be balanced
+			node = rotateRight(node);
 		if(node.right == null)
-			return node.left;
+			return null;
+		if(!isRed(node.right) && !isRed(node.right.left))
+				// node.right is  2- node
+			node = moveRedright(node);
+		
 		node.right = delmax(node.right);
-		node.node_nr = 1 + size(node.left) + size(node.right);
-		return node;
+		return balance(node);
 	}
 	public boolean contains(Key k){
 		if(k == null)
@@ -172,7 +295,7 @@ public class SymTlb_binTree<Key extends Comparable<Key>, Val>
 		return size(this.root);
 
 	}
-	private int size (BinNode<Key, Val> node){
+	private int size (RBNode<Key, Val> node){
 		if(node == null)
 			return 0;
 		else
@@ -185,7 +308,7 @@ public class SymTlb_binTree<Key extends Comparable<Key>, Val>
 		return min(root).k;
 
 	}
-	private BinNode<Key, Val> min(BinNode<Key, Val> node){
+	private RBNode<Key, Val> min(RBNode<Key, Val> node){
 		if(node.left == null)
 			return node;
 		else
@@ -200,7 +323,7 @@ public class SymTlb_binTree<Key extends Comparable<Key>, Val>
 
 	}
 
-	private BinNode<Key, Val> max(BinNode<Key, Val> node){
+	private RBNode<Key, Val> max(RBNode<Key, Val> node){
 		if(node.right == null)
 			return node;
 		else
@@ -216,13 +339,13 @@ public class SymTlb_binTree<Key extends Comparable<Key>, Val>
 		return height(this.root);
 	}
 
-	private int height(BinNode<Key, Val> node){
+	private int height(RBNode<Key, Val> node){
 		if(node == null)
 			return -1;
 		return 1 + Math.max(height(node.left), height(node.right));
 	}
 
-	private int rank(BinNode<Key, Val> node, Key k){
+	private int rank(RBNode<Key, Val> node, Key k){
 		if(k == null)
 			return 0;
 		int cmp = k.compareTo(node.k);
@@ -236,7 +359,7 @@ public class SymTlb_binTree<Key extends Comparable<Key>, Val>
 			return size(node.left);
 			
 	}
-	public boolean isRank_comparable(BinNode<Key, Val> node){
+	public boolean isRank_comparable(RBNode<Key, Val> node){
 		for(int i =0; i < size(); i++){
 			if(i != rank(select(i)))
 				return false;
@@ -258,7 +381,7 @@ public class SymTlb_binTree<Key extends Comparable<Key>, Val>
 	}
 
 	
-	private boolean isBST(BinNode<Key, Val> node, Key min, Key max){
+	private boolean isBST(RBNode<Key, Val> node, Key min, Key max){
 		if(node == null)
 			return true;
 
@@ -284,7 +407,7 @@ public class SymTlb_binTree<Key extends Comparable<Key>, Val>
 	}
 	
 	public static void main(String args[]){
-		SymTlb_binTree<String, Double> gpa = new SymTlb_binTree<String, Double>();
+		SymTlb_RB_Tree<String, Double> gpa = new SymTlb_RB_Tree<String, Double>();
 		gpa.put("C",  2.00);
 		gpa.put("C+", 2.33);
 		gpa.put("D",  1.00);

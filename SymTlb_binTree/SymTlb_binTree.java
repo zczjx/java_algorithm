@@ -154,7 +154,7 @@ public class SymTlb_binTree<Key extends Comparable<Key>, Val>
 	private BinNode<Key, Val> delmax(BinNode<Key, Val> node){
 		if(node.right == null)
 			return node.left;
-		node.right = delmin(node.right);
+		node.right = delmax(node.right);
 		node.node_nr = 1 + size(node.left) + size(node.right);
 		return node;
 	}
