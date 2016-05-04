@@ -212,7 +212,7 @@ public class S_Vector{
 			tmp.put(i, this.get(i) * a);
 		return tmp;
 	}
-	public double dot(double[] that){
+	public Double dot(double[] that){
 		double sum = 0.0;
 		for(int i : this.st.keys())
 			sum += that[i] * this.get(i);
@@ -221,7 +221,7 @@ public class S_Vector{
 
 	}
 
-	public double dot(S_Vector that){
+	public Double dot(S_Vector that){
 		double sum = 0.0;
 		if(this.dm != that.dm)
 			throw new IllegalArgumentException("Vector lengths disagree");
