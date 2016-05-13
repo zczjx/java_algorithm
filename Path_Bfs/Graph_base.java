@@ -19,6 +19,18 @@ public class Graph_base{
 			this.adj[i] = new Bag<Integer>();
 		
 	}
+	public Graph_base(Graph_base G){
+		this(G.vertex());
+		this.e = G.edge();
+		for(int i = 0; i < G.vertex(); i++){
+			Stack_by_list<Integer> rev = new Stack_by_list<Integer>();
+			for(int w : G.adj(i))
+				rev.push(w);
+			for(int w : rev)
+				this.adj[i].add(w);
+		}
+
+	}
 	public Graph_base(In in){
 		this(in.readInt());
 		int E = in.readInt();
@@ -87,7 +99,12 @@ public class Graph_base{
 	public static void main(String args[]){
 		In in = new In(args[0]);
 		Graph_base g = new Graph_base(in);
+		StdOut.println("g is :");
 		StdOut.println(g);
+		Graph_base h = new  Graph_base(g);
+		StdOut.println(" ");
+		StdOut.println("h is : ");
+		StdOut.println(h);
 
     }
 }
