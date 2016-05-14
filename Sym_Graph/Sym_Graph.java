@@ -22,14 +22,12 @@ public class Sym_Graph{
 		}
 		StdOut.println("Reading have done! " + filename);
 		this.keys = new String[st.size()];
-		StdOut.println("stop here1");
 		for(String name : st.keys()){
 			//StdOut.println(name);
 			this.keys[st.get(name)] = name;
 		}
 		this.graph = new Graph_base(st.size());
 		in = new In(filename);
-		StdOut.println("stop here2");
 		while(in.hasNextLine()){
 			String [] tmp = in.readLine().split(delm);
 			int v = this.st.get(tmp[0]);
