@@ -78,6 +78,21 @@ public class Dir_Graph{
 			throw new IllegalArgumentException("Number of vertices must be nonnegative");
 
 	}
+
+	public int in_degree(int v){
+		if((v >= 0) && (v < this.V)){
+			int in_cnt = 0;
+			for(int i = 0; i < this.V; i++){
+				for(int w : adj[i])
+					if(w == v)
+						in_cnt++;
+			}
+			return in_cnt;
+		}
+		else
+			throw new IllegalArgumentException("Number of vertices must be nonnegative");
+
+	}
 	public Iterable<Integer> adj(int v){
 		if((v >= 0) && (v < V))
 			return adj[v];
