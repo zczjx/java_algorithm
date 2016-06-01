@@ -2,6 +2,7 @@ import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
+import java.util.Comparator;
 
 public class Lz_Dijk_SP{
 	private boolean [] marked;
@@ -9,11 +10,24 @@ public class Lz_Dijk_SP{
 	private double [] distTo; // edgeTo[w].weight()
 	private MinPQ<Wgh_DirEdge> pq_tmp_edge;
 	
+	private class distTo_src_cmp implements Comparator<Wgh_DirEdge>{
+	public int	compare(Wgh_DirEdge e, Wgh_DirEdge f){
+		//internal class could access class var
+		double dist_e = distTo[e.from()] + e.weight();
+		double dist_f = distTo[f.from()] + f.weight();
+		if(dist_e < dist_f)
+			return -1;
+		else if(dist_e > dist_f)
+			return +1;
+		else
+			return 0;
+		}
+	}
 	public Lz_Dijk_SP(Wgh_DirGraph G, int start){
 		this.marked = new boolean[G.vertex_cnt()];
 		this.edgeTo = new Wgh_DirEdge[G.vertex_cnt()];
 		this.distTo = new double[G.vertex_cnt()];
-		this.pq_tmp_edge = new MinPQ<Wgh_DirEdge>();
+		this.pq_tmp_edge = new MinPQ<Wgh_DirEdge>(new distTo_src_cmp()); // should be distTo[w] min not wgh v-->w min
 		
 		for(int i = 0; i < G.vertex_cnt(); i++)
 			this.distTo[i] = Double.POSITIVE_INFINITY;
@@ -38,7 +52,6 @@ public class Lz_Dijk_SP{
 			if(distTo[w] > (distTo[v] + eg.weight())){
 				distTo[w] = distTo[v] + eg.weight();
 				edgeTo[w] = eg;
-				marked[w] = false;
 				pq_tmp_edge.insert(eg);
 			}
 		}
