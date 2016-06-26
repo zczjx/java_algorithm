@@ -84,6 +84,7 @@ public class Reg_NFA
 	 String txt = args[1];
 	 Reg_NFA nfa = new Reg_NFA(regexp);
 	 StdOut.println(nfa.recognizes(txt));
+	 StdOut.println(txt.matches(regexp));
 		
 	}
 }
