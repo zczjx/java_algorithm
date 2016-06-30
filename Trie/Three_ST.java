@@ -122,25 +122,30 @@ public class Three_ST<Value>
 	}
 
 	public String longestPrefixOf(String s){
-		int len = search(root, s, 0 ,0);
+		if(s == null || s.length() == 0)
+			return null;
+
+		int len = 0;
+		Node x = this.root;
+		int i = 0;
+		while(x != null && i < s.length()){
+			char c = s.charAt(i);
+			if(c < x.c)
+				x = x.left ;
+			else if (c > x.c)
+				x = x.right;
+			else{
+				i++;
+				if(x.val != null)
+					len = i;
+				x = x.mid;
+			}
+		
+		}
 		return s.substring(0, len);
 	}
 	
-	private int search(Node x, String s, int d, int len){
-		if(x == null)
-			return len;
-		char c = s.charAt(d);
-		if(c < x.c)
-			return search(x.left, s, d, len);
-		else if (c > x.c)
-			return search(x.right, s, d, len);
-		else if(d < (s.length() - 1) && x.val != null)
-			return search(x.mid, s, d+1, len);
-		else
-			len = d;
-		return len;
 	
-	}
 
 	public Iterable<String> keywithprefix(String pre){
 		
@@ -198,7 +203,6 @@ public class Three_ST<Value>
 		Three_ST<Integer> st = new Three_ST<Integer>();
 		for(int i = 0; !in.isEmpty(); i++){
 			String s = in.readString();
-			StdOut.println(s + " : " + i);
 			st.put(s, i);
 		}
 		for(String s : st.keys())
@@ -208,7 +212,7 @@ public class Three_ST<Value>
 	
 		while(!StdIn.isEmpty()){
 			String k = StdIn.readString();
-			StdOut.println(k + " : " + st.get(k));
+			StdOut.println(st.longestPrefixOf(k));
 		}
 		
 		

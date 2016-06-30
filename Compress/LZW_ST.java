@@ -3,7 +3,6 @@ import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.BinaryStdIn;
 import edu.princeton.cs.algs4.BinaryStdOut;
 import edu.princeton.cs.algs4.In;
-import edu.princeton.cs.algs4.TST;
 import edu.princeton.cs.algs4.Bag;
 import edu.princeton.cs.algs4.Alphabet;
 import java.util.NoSuchElementException;
@@ -22,7 +21,7 @@ public class LZW_ST
 
 	public static void compress(){
 		String i_str = BinaryStdIn.readString();
-		TST<Integer> st = new TST<Integer>();
+		Three_ST<Integer> st = new Three_ST<Integer>();
 		for(int i = 0; i < R; i++)
 			st.put("" + (char) i, i);
 		int code = R + 1;  // R is EOF
