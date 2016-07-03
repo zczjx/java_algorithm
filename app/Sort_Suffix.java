@@ -12,9 +12,7 @@ public class Sort_Suffix{
 		for(int i = 0; i < this.len; i++)
 			suffix[i] = txt.substring(i);
 		Quick3_sort.sort(suffix);
-		for(String s : suffix)
-			StdOut.println(s);
-		StdOut.println(" ");
+		
 	}
 
 	public int length(){
