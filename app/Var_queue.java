@@ -73,8 +73,11 @@ public class Var_queue<T_item>
 		}
 
 		public T_item	next(){
-			if(hasNext())
-				return arr[(head + i) % arr.length];
+			if(hasNext()){
+				i++;
+				return arr[(head + i - 1) % arr.length];
+
+			}
 			return null;
 		}
 
